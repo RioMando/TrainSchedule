@@ -1,0 +1,15 @@
+* {
+  box-sizing: border-box;
+}
+
+.boxRed {
+	background-color: #326;
+}
+
+.boxBorder {
+	border: solid grey 1px;
+}
+
+.fontWhite {
+	color: #fff;
+}
