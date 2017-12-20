@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+	<title>Train Schedule</title>
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+ <!--   <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/style.css">  -->
+
+</head>
+
+<body>
+
+
+  <!-- Creates the Overall Grid -->
+<div class="container">
+  <div class="jumbotron" align="center" style="background-color: 
+  #326; color: white" >
+    <h1> Train Schedule</h1>
+    <h4> Any train anywhere </h4>
+  </div>
+
+  <div class="dataTable" style="border-color: #5ba" >
+    <table class="table table-strped" >
+      <thead>
+        <tr>
+          <h3 style="background-color: #5ba; padding: 5px; color: white">Current Train Schedule</h3>
+          <th>Train Name</th>
+          <th>Destination</th>
+          <th>Frequency (min)</th>
+          <th>Next Arrival</th>
+          <th>Minutes Away</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+  <br>
+  <br>
+
+  <form>
+    <div class="form-group">
+      <label for="trainName">Train Name:</label>
+      <input type="text" class="form-control" id="input-search" aria-describedby="emailHelp" placeholder="Enter your search"> 
+    </div>
+    <div class="form-group">
+      <label for="destination">Destination:</label>
+      <input type="text" class="form-control" id="destination-input" placeholder="Enter the destination city">
+    </div>
+    <div class="form-group">
+      <label for="firstTrain-input">First Train Time (HH:mm - military time):</label>
+      <input type="text" class="form-control" id="firstTrain-input" placeholder="hh:mm">
+    </div>
+    <div class="form-group">
+      <label for="frequency">Frequency (min):</label>
+      <input type="number" class="form-control" id="frequency" placeholder="30">
+    </div>
+
+    <button type="submit" class="btn btn-primary" id="submit">Submit</button>
+    <button type="submit" class="btn btn-primary" id="clear">Clear Results</button>
+  </form>
+</div>
+
+<!--- ==================================================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.4/moment.min.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+<script type="text/javascript">
+
+  // Initialize Firebase
+  $(function() {
+    console.log("database initialized");
+    var config = {
+      apiKey: "AIzaSyA6Nz7R50i5Z359KsEhwI6nVrOZTua02Qo",
+      authDomain: "trainschedule-36cdf.firebaseapp.com",
+      databaseURL: "https://trainschedule-36cdf.firebaseio.com",
+      projectId: "trainschedule-36cdf",
+      storageBucket: "trainschedule-36cdf.appspot.com",
+      messagingSenderId: "899963486985"
+    }; //End of var config
+    firebase.initializeApp(config);
+
+    var database = firebase.database();
+
+    $("#submit").on("click", function(event) {
+      event.preventDefault();
+
+      var trainName = $("#input-search").val().trim();
+      var trainDestination = $("#destination-input").val().trim();
+      var trainStart = moment($("#firstTrain-input").val().trim(), "MM/DD/YY").form("X");
+      var trainFrequency = $("#frequency").val().trim();
+
+      var newTrain = {
+        name: trainName,
+        destination: trainDestination,
+        start: trainStart,
+        frequency: trainFrequency, 
+      }
+
+      database.ref().push(newTrain);
+      console.log(newTrain.name);
+      console.log(newTrain.destination);
+      console.log(newTrain.start);
+      console.log(newTrain.frequency);
+    }); //End of click submit listener
+
+
+    database.ref().on("child_added", function(childSnapshot) {
+      console.log(childSnapshot.val());
+
+      var trainName = childSnapshot.val().name;
+      var trainDestination = childSnapshot.val().destination;
+      var trainStart = childSnapshot.val().start;
+      var trainRate = childSnapshot.val().rate;
+
+      console.log(trainName);
+      console.log(trainDestination);
+      console.log(trainStart);
+      console.log(trainRate);
+
+      var trainStartPretty = moment.unix(trainStart).format("MM/DD/YY");
+
+      var trainMonths = moment().diff(moment.unix(trainStart, "X"), "months");
+      console.log(trainMonths);
+
+      var trainBilled = trainMonths * trainRate;
+      console.log(trainBilled);
+
+      var row = $("<tr>");
+
+      row.append("<td>" + trainName + "</td>");
+      row.append("<td>" + trainDestination + "</td>");
+      row.append("<td>" + trainStart + "</td>");
+      row.append("<td>" + trainMonths + "</td>");
+      row.append("<td>" + trainRate + "</td>");
+      // row.append("<td>" + trainBilled + "</td>");
+
+      $("tbody").append(row);
+    }); //End of child_added listener
+  }); //End of function to initialize firebase   
+</script>
+
+</body>
+</html>
