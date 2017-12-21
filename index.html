@@ -15,21 +15,24 @@
   <div class="jumbotron" align="center" style="background-color: 
   #326; color: white" >
     <h1> Train Schedule</h1>
-    <h4> Any train anywhere </h4>
+    <h4> Any Train Anywhere </h4>
   </div>
 
   <div class="dataTable" style="border-color: #5ba" >
     <table class="table table-strped" >
       <thead>
         <tr>
-          <h3 style="background-color: #5ba; padding: 5px; color: white">Current Train Schedule</h3>
+          <h3 style="background-color: #5ba; padding: 5px; color: white; text-align: center">Current Train Schedule</h3>
           <th>Train Name</th>
           <th>Destination</th>
-          <th>Frequency (min)</th>
-          <th>Next Arrival</th>
-          <th>Minutes Away</th>
+          <th style="text-align: center">Frequency (min)</th>
+          <th style="text-align: center">Next Arrival</th>
+          <th style="text-align: center">Minutes Away</th>
         </tr>
       </thead>
+      <tbody>
+
+      </tbody>
     </table>
   </div>
   <br>
@@ -109,29 +112,36 @@
       var trainName = childSnapshot.val().name;
       var trainDestination = childSnapshot.val().destination;
       var trainStart = childSnapshot.val().start;
-      var trainRate = childSnapshot.val().rate;
+      var trainFrequency = childSnapshot.val().frequency;
 
       console.log(trainName);
       console.log(trainDestination);
       console.log(trainStart);
-      console.log(trainRate);
+      console.log(trainFrequency);
+
+      var startConverted = moment(trainStart, "hh:mm").subtract(1, "years");
+      var currentTime = moment();
+      console.log("Current time: " + moment(currentTime).format("hh:mm"));
+      var diffTime = moment().diff(moment(startConverted), "minutes");
+
+      //console.log("Minutes away: " + minutesAway);
 
       var trainStartPretty = moment.unix(trainStart).format("MM/DD/YY");
 
       var trainMonths = moment().diff(moment.unix(trainStart, "X"), "months");
       console.log(trainMonths);
 
-      var trainBilled = trainMonths * trainRate;
+      
+/*      var trainBilled = trainMonths * trainFrequency;
       console.log(trainBilled);
-
+*/
       var row = $("<tr>");
 
       row.append("<td>" + trainName + "</td>");
       row.append("<td>" + trainDestination + "</td>");
-      row.append("<td>" + trainStart + "</td>");
-      row.append("<td>" + trainMonths + "</td>");
-      row.append("<td>" + trainRate + "</td>");
-      // row.append("<td>" + trainBilled + "</td>");
+      row.append("<td style='text-align: center'>" + trainFrequency + "</td>");
+    //  row.append("<td style='text-align: center'>" + nextArrival + "</td>");
+    //  row.append("<td style='text-align: center'>" + minutesAway + "</td>");
 
       $("tbody").append(row);
     }); //End of child_added listener
@@ -140,3 +150,12 @@
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
