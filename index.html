@@ -41,11 +41,11 @@
   <form>
     <div class="form-group">
       <label for="">Train Name:</label>
-      <input type="text" class="form-control" id="input-search" placeholder="Enter your search"> 
+      <input type="text" class="form-control" id="input-search" placeholder="Train's name"> 
     </div>
     <div class="form-group">
       <label for="">Destination:</label>
-      <input type="text" class="form-control" id="destination-input" placeholder="Enter the destination city">
+      <input type="text" class="form-control" id="destination-input" placeholder="City of destination">
     </div>
     <div class="form-group">
       <label for="">First Train Time (hh:mm - military time):</label>
@@ -88,7 +88,7 @@
 
       var trainName = $("#input-search").val().trim();
       var trainDestination = $("#destination-input").val().trim();
-      var trainStart = moment($("#firstTrain-input").val().trim(), "HH:mm").format("X");
+      var trainStart = moment($("#firstTrain-input").val().trim(), "hh:mm").format("X");
       var trainFrequency = $("#frequency").val().trim();
 
       var newTrain = {
@@ -116,32 +116,29 @@
 
       console.log(trainName);
       console.log(trainDestination);
-      console.log(trainStart);
+      console.log("1st Train time: " + trainStart);
       console.log(trainFrequency);
 
-      var startConverted = moment(trainStart, "hh:mm").subtract(1, "years");
+console.log("1st Train Time: " +  moment(trainStart, "HH:mm").format("HH:mm"));
+      //var startConverted = moment(trainStart, "hh:mm");//.subtract(1, "year");
+console.log("1st Train Time converted: " +  moment(trainStart).format("HH:mm"));
       var currentTime = moment();
-      console.log("Current time: " + moment(currentTime).format("hh:mm"));
-      var diffTime = moment().diff(moment(startConverted), "minutes");
+console.log("Current time: " + moment(currentTime).format("hh:mm"));
+      var diffTime = moment().diff(moment.unix(trainStart), "minutes");
+      var reminderTime = diffTime % trainFrequency;
+      var minutesAway = trainFrequency - reminderTime;
+console.log("Minutes away: " + minutesAway);
+      var nextArrival = moment().add(minutesAway, "m");//.format("hh:mm A");
+      nextArrival = moment(nextArrival).format("hh:mm A");
+console.log("Next Arrival: " + nextArrival);
 
-      //console.log("Minutes away: " + minutesAway);
-
-      var trainStartPretty = moment.unix(trainStart).format("MM/DD/YY");
-
-      var trainMonths = moment().diff(moment.unix(trainStart, "X"), "months");
-      console.log(trainMonths);
-
-      
-/*      var trainBilled = trainMonths * trainFrequency;
-      console.log(trainBilled);
-*/
+      //Table dinamically generated to show the results of Current Train Schedule 
       var row = $("<tr>");
-
       row.append("<td>" + trainName + "</td>");
       row.append("<td>" + trainDestination + "</td>");
       row.append("<td style='text-align: center'>" + trainFrequency + "</td>");
-    //  row.append("<td style='text-align: center'>" + nextArrival + "</td>");
-    //  row.append("<td style='text-align: center'>" + minutesAway + "</td>");
+     row.append("<td style='text-align: center'>" + nextArrival + "</td>");
+     row.append("<td style='text-align: center'>" + minutesAway + "</td>");
 
       $("tbody").append(row);
     }); //End of child_added listener
