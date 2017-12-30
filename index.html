@@ -88,7 +88,7 @@
 
       var trainName = $("#input-search").val().trim();
       var trainDestination = $("#destination-input").val().trim();
-      var trainStart = moment($("#firstTrain-input").val().trim(), "hh:mm").format("X");
+      var trainStart = moment($("#firstTrain-input").val().trim(), "HH:mm").subtract(1, "years").format("X");
       var trainFrequency = $("#frequency").val().trim();
 
       var newTrain = {
@@ -117,15 +117,14 @@
       console.log(trainName);
       console.log(trainDestination);
       console.log("1st Train time: " + trainStart);
-      console.log(trainFrequency);
+      console.log("Frequency: " + trainFrequency);
 
-console.log("1st Train Time: " +  moment(trainStart, "HH:mm").format("HH:mm"));
-      //var startConverted = moment(trainStart, "hh:mm");//.subtract(1, "year");
-console.log("1st Train Time converted: " +  moment(trainStart).format("HH:mm"));
-      var currentTime = moment();
-console.log("Current time: " + moment(currentTime).format("hh:mm"));
-      var diffTime = moment().diff(moment.unix(trainStart), "minutes");
-      var reminderTime = diffTime % trainFrequency;
+console.log("Current time: " + moment().format("hh:mm A"));
+
+      trainStartCoverted = moment(trainStart, "HH:mm");
+      var diffTime = moment().diff(moment.unix(trainStartCoverted), "minutes");
+      var reminderTime = moment().diff(moment.unix(trainStartCoverted), "minutes") % trainFrequency;
+console.log("Tiempo restante: " + reminderTime);
       var minutesAway = trainFrequency - reminderTime;
 console.log("Minutes away: " + minutesAway);
       var nextArrival = moment().add(minutesAway, "m");//.format("hh:mm A");
@@ -147,12 +146,3 @@ console.log("Next Arrival: " + nextArrival);
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
