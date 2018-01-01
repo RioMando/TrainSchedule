@@ -63,7 +63,9 @@
 
 <!--- ==================================================== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.4/moment.min.js"></script>
+
+<!-- Added Moment JS -->
+<script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
 <script type="text/javascript">
@@ -88,7 +90,8 @@
 
       var trainName = $("#input-search").val().trim();
       var trainDestination = $("#destination-input").val().trim();
-      var trainStart = moment($("#firstTrain-input").val().trim(), "HH:mm").subtract(1, "years").format("X");
+      var trainStart = $("#firstTrain-input").val().trim();//, "hh:mm").subtract(1, "years").format("X");
+      //var trainStart = moment($("#firstTrain-input").val().trim(), "hh:mm").subtract(1, "years").format("X");
       var trainFrequency = $("#frequency").val().trim();
 
       var newTrain = {
@@ -103,6 +106,12 @@
       console.log(newTrain.destination);
       console.log(newTrain.start);
       console.log(newTrain.frequency);
+
+      $("#input-search").val("");
+      $("#destination-input").val("");
+      $("#firstTrain-input").val("");
+      $("#frequency").val("");
+
     }); //End of click submit listener
 
 
@@ -117,18 +126,29 @@
       console.log(trainName);
       console.log(trainDestination);
       console.log("1st Train time: " + trainStart);
-      console.log("Frequency: " + trainFrequency);
+      console.log("Frequency: " + trainFrequency + " " + typeof trainFrequency);
+      console.log("train start: " + trainStart);
+  var currentTime = moment();
+  console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+      // First Time (pushed back 1 year to make sure it comes before current time)
+      var trainStartCoverted = moment(trainStart, "hh:mm").subtract(1, "years");
+      // Difference between the times
+      var diffTime = moment().diff(moment(trainStartCoverted), "minutes");
+      // Time apart (remainder)
+      var reminderTime = diffTime % trainFrequency;
+      //var reminderTime = -1*moment().diff(moment.unix(trainStartCoverted), "minutes") % trainFrequency;
+      // Next Train Minutes Away     
+      var minutesAway = trainFrequency - reminderTime;
+      //Next Train Arrival
+      var nextArrival = moment().add(minutesAway, "minutes").format("HH:mm A");
+      //nextArrival = moment(nextArrival).format("hh:mm A");
 
 console.log("Current time: " + moment().format("hh:mm A"));
-
-      trainStartCoverted = moment(trainStart, "HH:mm");
-      var diffTime = moment().diff(moment.unix(trainStartCoverted), "minutes");
-      var reminderTime = moment().diff(moment.unix(trainStartCoverted), "minutes") % trainFrequency;
-console.log("Tiempo restante: " + reminderTime);
-      var minutesAway = trainFrequency - reminderTime;
+console.log("start: " + trainStart + " type: " + typeof trainStart);     
+console.log("converted: " + trainStartCoverted + " " +  typeof trainStartCoverted);
+console.log("diferencia tiempo: " + diffTime);
+console.log("Remainder time: " + reminderTime + " Tipo: " + typeof reminderTime );
 console.log("Minutes away: " + minutesAway);
-      var nextArrival = moment().add(minutesAway, "m");//.format("hh:mm A");
-      nextArrival = moment(nextArrival).format("hh:mm A");
 console.log("Next Arrival: " + nextArrival);
 
       //Table dinamically generated to show the results of Current Train Schedule 
@@ -142,6 +162,8 @@ console.log("Next Arrival: " + nextArrival);
       $("tbody").append(row);
     }); //End of child_added listener
   }); //End of function to initialize firebase   
+
+
 </script>
 
 </body>
