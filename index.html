@@ -38,6 +38,7 @@
   <br>
   <br>
 
+  <!-- Form to capture information about new trains -->
   <form>
     <div class="form-group">
       <label for="">Train Name:</label>
@@ -107,6 +108,7 @@
       console.log(newTrain.start);
       console.log(newTrain.frequency);
 
+      // Clean information on form
       $("#input-search").val("");
       $("#destination-input").val("");
       $("#firstTrain-input").val("");
@@ -114,7 +116,7 @@
 
     }); //End of click submit listener
 
-
+    // Listener, when something is added to the db the function is called
     database.ref().on("child_added", function(childSnapshot) {
       console.log(childSnapshot.val());
 
